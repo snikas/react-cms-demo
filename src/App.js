@@ -1,24 +1,61 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react';
+import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
+
+async function getS3Content (s3path) {
+  const s3data = await fetch(s3path);
+  const s3dataText = await s3data.text();
+  return DOMPurify.sanitize(s3dataText);
+}
 
 function App() {
+  const [htmlContentCourse1, setHtmlContentCourse1] = useState('');
+  const [htmlContentCourse2, setHtmlContentCourse2] = useState('');
+
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      // TODO: set up cloudfront to point to s3 origin and update fetch url
+      const course1html = await getS3Content('https://learning-cms-content.s3.amazonaws.com/course1.html');
+      setHtmlContentCourse1(course1html);
+  
+      const course2html = await getS3Content('https://learning-cms-content.s3.amazonaws.com/course2.html');
+      setHtmlContentCourse2(course2html);
+    }
+
+    fetchContent();
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <>
+      <header>
+        <h1>Welcome to Our Training Platform</h1>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/">Courses</a></li>
+            <li><a href="/">Contact Us</a></li>
+          </ul>
+        </nav>
       </header>
-    </div>
+      <main>
+
+      <section class="highlights">
+            <h2>Featured Courses</h2>
+            <div class="course-list">
+                <div class="course">
+                    <h3>Course 1</h3>
+                    <div>{parse(htmlContentCourse1)}</div>
+                </div>
+                <div class="course">
+                    <h3>Course 2</h3>
+                    <div>{parse(htmlContentCourse2)}</div>
+                </div>
+            </div>
+        </section>
+      </main>
+    </>
   );
 }
 
