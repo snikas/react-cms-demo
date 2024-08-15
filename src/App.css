@@ -90,3 +90,8 @@ form button:hover {
   width: 200px;
   display: block;
 }
+
+.scroll-prompt {
+  font-size: 30px;
+  text-align: center;
+}
