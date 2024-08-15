@@ -10,6 +10,7 @@ async function getS3Content (s3path) {
 }
 
 function App() {
+  //TODO: set up intersection observer to load html content when parent elements come into view
   const [htmlContentCourse1, setHtmlContentCourse1] = useState('');
   const [htmlContentCourse2, setHtmlContentCourse2] = useState('');
 
